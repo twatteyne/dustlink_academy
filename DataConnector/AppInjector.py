@@ -71,6 +71,16 @@ class AppInjector(EventBusClient.EventBusClient):
                                             sync=True
                                         )
                     
+                    elif self._appName=='OAPsound':
+                        dataToSend =    OAPMessage.build_oap(
+                                            0,                                   # seq_num
+                                            0,                                   # session_id
+                                            OAPMessage.CmdType.PUT,              # command
+                                            [3,0],                               # address
+                                            tags=[OAPMessage.TLVByte(t=0,v=data['fields']['status'])],
+                                            sync=True
+                                        )
+                    
                     elif self._appName=='OAPTemperature':
                         dataToSend =    OAPMessage.build_oap(
                                             0,                                   # seq_num
@@ -81,7 +91,7 @@ class AppInjector(EventBusClient.EventBusClient):
                                                   OAPMessage.TLVLong(t=1,v=data['fields']['rate']),],# parameters,
                                             sync=True
                                         )
-                        
+                    
                     else:
                         raise NotImplementedError()
                     

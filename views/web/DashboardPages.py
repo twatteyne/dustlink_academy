@@ -66,10 +66,10 @@ class DashboardPages(WebPage.WebPage):
                     if row['type']=='pressure':
                         row['lastvalue'] = row['lastvalue']+'_calibrate'
             
-            # add list of motes running OAPLED app
-            motesWithOapLed = []
             with dld.dataLock:
                 for mac in dld.getMoteMacs():
+                    
+                    # add list of motes running OAPLED app
                     if 'OAPLED' in dld.getAttachedApps(mac):
                         try:
                             dld.authorize(
@@ -90,6 +90,28 @@ class DashboardPages(WebPage.WebPage):
                                     'lastupdated':    None,
                                 }
                             ]
+                    
+                    # add list of motes running OAPsound app
+                    if 'OAPsound' in dld.getAttachedApps(mac):
+                        try:
+                            dld.authorize(
+                                username,
+                                ['motes',mac,'apps','OAPsound'],
+                                DustLinkData.DustLinkData.ACTION_PUT
+                            )
+                        except DataVaultException.Unauthorized:
+                            pass # username has not sufficient rights
+                        else:
+                            returnData += [
+                                {
+                                    'mac':            DustLinkData.DustLinkData.macToString(mac),
+                                    'type':           'sound',
+                                    'min':            None,
+                                    'lastvalue':      None,
+                                    'max':            None,
+                                    'lastupdated':    None,
+                                }
+                            ]
                 
                 # list all MACs currently in network
                 macsInNetwork = []
@@ -103,6 +125,8 @@ class DashboardPages(WebPage.WebPage):
                 linkUrl = None
                 if   r['type']=='led':
                    linkUrl  = '/motedata?mac={0}&app=OAPLED'.format(r['mac'])
+                elif r['type']=='sound':
+                   linkUrl  = '/motedata?mac={0}&app=OAPsound'.format(r['mac'])
                 elif r['type']=='temperature':
                     linkUrl  = '/motedata?mac={0}&app=OAPTemperature'.format(r['mac'])
                 elif r['type']=='voltage':

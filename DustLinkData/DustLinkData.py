@@ -3399,6 +3399,11 @@ class DustLinkData(DataVault.DataVault):
             'transport':         (APP_TRANSPORT_OAP, (2,3)),
             'toMoteFields':      ('>b', ['status']),
         },
+        #'OAPsound': {
+        #    'description':       "Turn sounds on/off.",
+        #    'transport':         (APP_TRANSPORT_OAP, (3,0)),
+        #    'toMoteFields':      ('>b', ['status']),
+        #},
         'DC2126A': {
             'description':       "Received and parses data from a DC2126A board.",
             'transport':         (APP_TRANSPORT_UDP, 60102),

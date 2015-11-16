@@ -25,3 +25,12 @@ function changeLEDstate(mac,ledStatus) {
       data:       JSON.stringify({'status':ledStatus})
    });
 }
+
+// post to set the mote's Sound
+function changeSoundState(mac,soundStatus) {
+   jQuery.ajax({
+      type:       'POST',
+      url:        '/motedata/json/send?mac='+mac+'&app=OAPsound/',
+      data:       JSON.stringify({'status':soundStatus})
+   });
+}

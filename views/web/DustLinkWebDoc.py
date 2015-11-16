@@ -939,6 +939,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     
     <ul>
         <li><tt>OAPLED</tt></li>
+        <li><tt>OAPsound</tt></li>
         <li><tt>OAPTemperature</tt></li>
         <li><tt>DC2126A</tt></li>
         <li><tt>LIS331</tt></li>
