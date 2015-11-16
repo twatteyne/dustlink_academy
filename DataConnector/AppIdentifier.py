@@ -160,4 +160,37 @@ class AppIdentifier(EventBusClient.EventBusClient):
                 signal        = 'rawAppData_{0}'.format(appname),
                 data          = packetOut,
             )
+        
+        if isinstance(notif,OAPNotif.OAPDigital):
+            
+            try:
+                if [c for c in notif.channel]==[2,0]:
+                    appname = 'OAPtilt'
+                else:
+                    print 'unknown digital notification'
+                    return
+                
+                # attach this app to this mote
+                dld = DustLinkData.DustLinkData()
+                with dld.dataLock:
+                    if not dld.getFastMode():
+                        try:
+                            dld.attachAppToMote(mac,appname)
+                        except ValueError:
+                            pass # happens when mote not known, app not known, or app already attached to mote
+                
+                packetOut     = {
+                    'timestamp' : time.time(),
+                    'mac'       : mac,
+                    'payload'   : [notif.value],
+                }
+                
+                # dispatch
+                self._dispatch (
+                    signal        = 'rawAppData_{0}'.format(appname),
+                    data          = packetOut,
+                )
+
+            except Exception as err:
+                print err
             

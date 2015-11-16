@@ -116,15 +116,28 @@ def parse_oap_notif(data, index = 0):
         result.packet_timestamp             = (secs, usecs)
     
     elif notif_type==NOTIFTYPE_DIG:
-    
+        
         #===== parse
         
-        raise NotImplementedError("parsing digital OAP notification")
+        # channel (TLV)
+        (tag, l, channel)                   = OAPMessage.parse_tlv(data[index:])
+        if tag!=TAG_ADDRESS:
+            raise ValueError('invalid notification data: expected address tag')
+        index                              += 2 + l
+        
+        # timestamp
+        (secs, usecs)                       = struct.unpack_from('!ql', data, index + 1)
+        index                              += 12
+        
+        # value
+        value                               = data[index]
+        index                              += 1
         
         #===== create and populate result structure
         
-        raise NotImplementedError("filling digital OAP result structure")
-        
+        result                              = OAPDigital()
+        result.value                        = value
+    
     elif notif_type==NOTIFTYPE_LOCATEME:
         
         #===== parse
@@ -209,6 +222,16 @@ class OAPTempSample(OAPSample):
 
     def __str__(self):
         return 'TEMP=%d' % (self.samples[0])
+
+class OAPDigital(OAPNotif):
+    '''
+    \brief representation of a digital GPIO notification.
+    '''
+    def __init__(self):
+        self.value                           = 0
+
+    def __str__(self):
+        return 'C=[%s] DIG=%d' % (self.channel_str(), self.value)
 
 class OAPAnalogStats(OAPNotif):
     '''

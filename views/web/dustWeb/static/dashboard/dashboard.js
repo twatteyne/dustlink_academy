@@ -117,6 +117,13 @@ function redrawDashboard() {
                )
             );
             break;
+         case 'tilt':
+            dashboardElems.push(
+               new VizTilt(
+                  dashboardData[i]
+               )
+            );
+            break;
          case 'sound':
             dashboardElems.push(
                new VizSound(
@@ -778,4 +785,62 @@ VizSound.prototype.click = function(event) {
    
    // post to set the mote's Sound
    changeSoundState(this.mac,soundStatus);
+}
+
+//===== VizTilt
+
+function VizTilt(data) {
+   this.init(data);
+}
+VizTilt.prototype        = new Viz;
+VizTilt.prototype.init   = function(data) {
+   
+   // store params
+   this.feedId          = data.feedId;
+   this.mac             = data.mac;
+   
+   // initialize parent
+   Viz.call(this,data);
+   
+   // create widget
+   data.vizHeight       = null
+   this.vizId           = this.createNewWidget(
+      data
+   );
+   
+   // add image
+   var that = this;
+   $('#viz_'+this.vizId).append('<img name="'+data.mac+'" id="image_'+this.vizId+'"/>');
+   $('#image_'+this.vizId).attr('src',"arrow_up.png");
+   $('#image_'+this.vizId).css('position','absolute');
+   $('#image_'+this.vizId).css('left',  ($('#viz_'+this.vizId).width() -128)/2);
+   $('#image_'+this.vizId).css('bottom',($('#viz_'+this.vizId).height()-128)/2);
+   $('#image_'+this.vizId).addClass('nodrag');
+   $('#image_'+this.vizId).click(
+      function(event){
+         that.click(event);
+         event.preventDefault();
+      }
+   );
+   
+   // add mac
+   $('#mac_'+this.vizId).html(data.mac);
+   
+   // update
+   this.update(data);
+}
+VizTilt.prototype.update = function(data) {
+   switch (data.lastvalue) {
+      case null:
+         // nothing to do
+         break;
+      case '0':
+         $('#image_'+this.vizId).attr('src','arrow_up.png');
+         break;
+      default:
+         $('#image_'+this.vizId).attr('src','arrow_down.png');
+         break;
+   }
+}
+VizTilt.prototype.click = function(event) {
 }

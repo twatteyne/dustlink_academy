@@ -3414,6 +3414,11 @@ class DustLinkData(DataVault.DataVault):
             'transport':         (APP_TRANSPORT_UDP, 60103),
             'fromMoteFields':    ('>hhh', ['x','y','z']),
         },
+        'OAPtilt': {
+            'description':       "Tilt sensor.",
+            'transport':         (APP_TRANSPORT_OAP, (2,0)),
+            'fromMoteFields':    ('>b', ['status']),
+        },
     }
     
     ##

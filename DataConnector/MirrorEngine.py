@@ -55,6 +55,11 @@ class MirrorEngine(EventBusClient.EventBusClient):
             signal      = 'parsedAppData_LIS331',
             weak        = False,
         )
+        dispatcher.connect(
+            self._addToQueue,
+            signal      = 'parsedAppData_OAPtilt',
+            weak        = False,
+        )
         
         dispatcher.connect(
             self.getMirrorData,
@@ -127,6 +132,11 @@ class MirrorEngine(EventBusClient.EventBusClient):
         dispatcher.disconnect(
             self._addToQueue,
             signal = 'parsedAppData_LIS331',
+            weak   = False,
+        )
+        dispatcher.disconnect(
+            self._addToQueue,
+            signal = 'parsedAppData_OAPtilt',
             weak   = False,
         )
         
@@ -267,6 +277,18 @@ class MirrorEngine(EventBusClient.EventBusClient):
                 }
             ]
         
+        elif signal in ['parsedAppData_OAPtilt']:
+            
+            # format newData entry
+            newData += [
+                {
+                    'mac':             mac,
+                    'type':            'tilt',
+                    'lastvalue':       '{0}'.format(data['fields']['status']),
+                    'lastupdated':     str(data['timestamp']),
+                }
+            ]
+
         else:
             
             raise SystemError('unexpected signal={0}'.format(signal))
